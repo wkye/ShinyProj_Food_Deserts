@@ -1,0 +1,4 @@
+load("/Users/williamkye/Box Sync/nyc data science academy/project 1/R code/zbp01detailwide.rds")
+load("/Users/williamkye/Box Sync/nyc data science academy/project 1/R code/zbp10detailwide.rds")
+load("/Users/williamkye/Box Sync/nyc data science academy/project 1/R code/zbp02detailwide.rds")
+load("/Users/williamkye/Box Sync/nyc data science academy/project 1/R code/zbp02detailwide.rds")
