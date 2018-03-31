@@ -1,4 +1,3 @@
-
 library(DT)
 library(shiny)
 library(googleVis)
@@ -24,11 +23,11 @@ shinyServer(function(input, output){
   output$map <- renderLeaflet({
     leaflet() %>%  setView(lng = -71.0589, lat = 42.3601, zoom = 12) %>%addTiles() 
   })
-
+  
   output$predicted_values<-renderPlotly({
-  var<-paste0('bc_', input$outcome)
-  get(var)
-   })
+    var<-paste0('bc_', input$outcome)
+    get(var)
+  })
   
   # observe({
   #   var<-paste0('bc_', input$outcome)
@@ -39,42 +38,42 @@ shinyServer(function(input, output){
       output$scatter<-renderPlotly({
         filtered<- scat_data%>% select(race_white, race, input$scatter_outcome, play)
         plot_ly(filtered,
-          x =~ race_white,
-          y=~ get(input$scatter_outcome),
-          type = 'scatter',
-          frame = ~play,
-          hoverinfo = 'text',
-          text =~ paste(sep = '<br>',
-                        paste(input$scatter_outcome, get(input$scatter_outcome), sep = ': '),
-                        paste0('percent white: ',race_white))
-          #color =~ race_white
+                x =~ race_white,
+                y=~ get(input$scatter_outcome),
+                type = 'scatter',
+                frame = ~play,
+                hoverinfo = 'text',
+                text =~ paste(sep = '<br>',
+                              paste(input$scatter_outcome, get(input$scatter_outcome), sep = ': '),
+                              paste0('percent white: ',race_white))
+                #color =~ race_white
         )%>% hide_legend() %>% animation_slider(hide = T) %>% layout(
           title = input$scatter_outcome,
           yaxis = list(title = paste0('# of ', input$scatter_outcome)),
           xaxis = list(title = paste0('percent white'))
         )
-    })
+      })
     } else if (input$collapse == 'collapse into groups'){
-
-        output$scatter<-renderPlotly({
-          filtered<- scat_data%>% select(race_white, race,input$scatter_outcome, play)
-          plot_ly(filtered,
-                  x =~ race_white,
-                  y=~ get(input$scatter_outcome),
-                  type = 'scatter',
-                  frame = ~play,
-                  color =~ race,
-                  colors = c('green', 'red', 'pink', 'skyblue'),
-                  hoverinfo = 'text',
-                  text =~ paste(sep = '<br>',
-                                paste(input$scatter_outcome, get(input$scatter_outcome), sep = ': '),
-                                race)
-          )%>% animation_slider(hide = T)%>% animation_opts %>%layout(
-            title = input$scatter_outcome,
-            yaxis = list(title = paste0('# of ', input$scatter_outcome)),
-            xaxis = list(title = paste0('demographic group'),showticklabels = F)
-          )
-        })
+      
+      output$scatter<-renderPlotly({
+        filtered<- scat_data%>% select(race_white, race,input$scatter_outcome, play)
+        plot_ly(filtered,
+                x =~ race_white,
+                y=~ get(input$scatter_outcome),
+                type = 'scatter',
+                frame = ~play,
+                color =~ race,
+                colors = c('green', 'red', 'pink', 'skyblue'),
+                hoverinfo = 'text',
+                text =~ paste(sep = '<br>',
+                              paste(input$scatter_outcome, get(input$scatter_outcome), sep = ': '),
+                              race)
+        )%>% animation_slider(hide = T)%>% animation_opts %>%layout(
+          title = input$scatter_outcome,
+          yaxis = list(title = paste0('# of ', input$scatter_outcome)),
+          xaxis = list(title = paste0('demographic group'),showticklabels = F)
+        )
+      })
     } else{
       output$scatter<-renderPlotly({
         filtered<- scat_data%>% select(race, input$scatter_outcome)
@@ -84,9 +83,9 @@ shinyServer(function(input, output){
                 type = 'box',
                 color =~ race,
                 colors = c('green', 'red', 'pink', 'skyblue')) %>%layout(
-          title = input$scatter_outcome,
-          yaxis = list(title = paste0('# of ', input$scatter_outcome)),
-          xaxis = list(title = paste0('demographic group'),showticklabels = F))
+                  title = input$scatter_outcome,
+                  yaxis = list(title = paste0('# of ', input$scatter_outcome)),
+                  xaxis = list(title = paste0('demographic group'),showticklabels = F))
         
       })
       
@@ -104,11 +103,11 @@ shinyServer(function(input, output){
       data<-data.frame(x,y)
       plot_ly(data, x =~x, y =~y, marker = list(color = c('green', 'skyblue', 'red', 'orange'))) %>% 
         layout(
-        title = ('predicted # fastfood'),
-        yaxis = list(title = 'predicted # of fast food', range= c(0,150)),
-        xaxis = list(title = 'Demographic Group')
-      )
-  })
+          title = ('predicted # fastfood'),
+          yaxis = list(title = 'predicted # of fast food', range= c(0,150)),
+          xaxis = list(title = 'Demographic Group')
+        )
+    })
   })
   observe({
     output$bar_chart_freshfood<- renderPlotly({
@@ -188,5 +187,5 @@ shinyServer(function(input, output){
   observe({
     
   })
-
+  
 })

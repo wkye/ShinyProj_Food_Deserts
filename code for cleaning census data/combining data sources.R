@@ -1,9 +1,9 @@
 rm(list = ls())
 library(dplyr)
-load('R code/zcta_to_msa.rda')
-load('R code/zip_msa.rda')
-filenames<-lapply(1:15, function(x) paste(c('R code/zbp',formatC(x, digits = 0, width = 2, flag = 0), 'detailwide.rds'), collapse = ''))
-load('R code/zbp00detailwide.rda')
+load('R data/zcta_to_msa.rda')
+load('R data/zip_msa.rda')
+filenames<-lapply(1:15, function(x) paste(c('R data/zbp',formatC(x, digits = 0, width = 2, flag = 0), 'detailwide.rds'), collapse = ''))
+load('R data/zbp00detailwide.rda')
 zbptotal<-zbp00detailwide
 for (i in 1:15){
   data1<-readRDS(filenames[[i]])
@@ -18,14 +18,14 @@ msa_lst<-c('35620', '35380', '33460', '31100', '16980', '26420', '19100', '37980
 zbptotal<- filter(zbptotal, msa %in%msa_lst)
 zbptotal$msa<-factor(zbptotal$msa)
 
-save(zbptotal, file = 'R code/zbptotal.rda')
+save(zbptotal, file = 'R data/zbptotal.rda')
 
 table(zbptotal$Geo_QName)
 
 
 rm(list = ls())
-data<-readRDS('R code/zip_2000.rds')
-filenames<- lapply(c('09.rds','10.rds','11.rds','12.rds','13.rds','14.rds'), function(x) paste0('R code/zip_20',x))
+data<-readRDS('R data/zip_2000.rds')
+filenames<- lapply(c('09.rds','10.rds','11.rds','12.rds','13.rds','14.rds'), function(x) paste0('R data/zip_20',x))
 
 for (i in 1:6){
   data1<-readRDS(filenames[[i]])
@@ -34,9 +34,7 @@ for (i in 1:6){
 
 names(data)
 
-
-
-load('R code/zbptotal.rda')
+load('R data/zbptotal.rda')
 
 final_data<-inner_join(data, zbptotal, by='zip')
 
@@ -52,6 +50,7 @@ final_data<- inner_join(final_data, city_names, by = 'Geo_QName')
 names(final_data)<-gsub('unfreshfood', 'unfreshgroceries', names(final_data))
 names(final_data)<-gsub('food', 'fastfood', names(final_data))
 names(final_data)<-gsub('freshfastfood', 'freshfood', names(final_data))
+final_data1 <- final_data[,-c(2,3,5:9,14,18,20:24,28, 33,35:39,43, 48,50:54, 58,63,65:69, 73, 78,80:84, 88, 93,95:99,103,108:180)]
 final_data<- final_data[,c(1,3,5:9,14,18,20:24,28, 33,35:39,43, 48,50:54, 58,63,65:69, 73, 78,80:84, 88, 93,95:99,103,108:180)]
 x<-data.frame(sapply(final_data[3:7], function(x) as.integer((x/final_data$pop_00)*100)))
 new_name=paste0('per_', names(x))
@@ -130,12 +129,14 @@ final_data<- final_data %>% mutate( per_race_black_01 = as.integer(((per_race_bl
                                     inc_med_07 = as.integer(((inc_med_09-inc_med_00)/9)*7)+inc_med_00,
                                     inc_med_08 = as.integer(((inc_med_09-inc_med_00)/9)*8)+inc_med_00)
 
+final_data<-inner_join(final_data, final_data1, by = 'zip')
+
 names(final_data)
-final_data<-final_data[,c(1,8,15,22,29,36,43,50,53:116,123:206)]
+#final_data<-final_data[,c(1,8,15,22,29,36,43,50,53:116,123:206)]
 
-save(final_data, file = 'R code/final data.rda')
+save(final_data, file = 'R data/final data.rda')
 
-load('/Users/williamkye/Box Sync/nyc data science academy/project 1/R code/shape.rda')
+load('/Users/williamkye/Box Sync/nyc data science academy/project_1/R data/shape.rda')
 
 shape@data<- rename(shape@data, zip = ZCTA5CE10)
 shape<-shape[order(shape$zip),]
@@ -168,5 +169,5 @@ names(shape1)
 
 
 shape1$color<-0
-save(shape1, file = 'R code/shape1.rda')
+save(shape1, file = 'R data/shape1.rda')
 
